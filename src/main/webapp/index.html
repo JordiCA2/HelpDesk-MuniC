@@ -1,10 +1,138 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Start Page</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema de Soporte e Inventario - Municipalidad de Cocachacra</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Gestión integral de soporte técnico e inventario de la SGTI - Municipalidad Distrital de Cocachacra">
+  <link rel="icon" href="/assets/favicon.png">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="/assets/logo-muni-cocachacra.svg" alt="Municipalidad Distrital de Cocachacra" class="h-8 w-auto">
+        <span class="text-slate-900 font-semibold tracking-tight">Sistema de Soporte e Inventario</span>
+      </div>
+      <nav class="hidden sm:flex items-center gap-6">
+        <a href="/tickets" class="text-slate-700 hover:text-slate-900">Tickets</a>
+        <a href="/inventario" class="text-slate-700 hover:text-slate-900">Inventario</a>
+        <a href="/reportes" class="text-slate-700 hover:text-slate-900">Reportes</a>
+        <a href="/login" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600/30">Ingresar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-white to-slate-100"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
+              Gestión Integral de Soporte e Inventario SGTI
+            </h1>
+            <p class="mt-4 text-lg text-slate-700 max-w-2xl">
+              Moderniza la atención de incidencias y el control de activos tecnológicos de la Municipalidad Distrital de Cocachacra.
+            </p>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+              <a href="/tickets/nuevo" class="inline-flex items-center justify-center rounded-md bg-blue-600 px-5 py-3 text-white font-medium hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/30">
+                Crear Ticket
+              </a>
+              <a href="/inventario" class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-5 py-3 text-white font-medium hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/30">
+                Ver Inventario
+              </a>
+            </div>
+            <form id="ticketSearchForm" action="/tickets" method="GET" class="mt-6">
+              <div class="flex rounded-lg shadow-sm ring-1 ring-slate-200 bg-white overflow-hidden">
+                <input id="q" name="q" type="search" required
+                       placeholder="Buscar ticket por ID, asunto o área"
+                       class="w-full px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/30">
+                <button type="submit" class="whitespace-nowrap bg-blue-600 px-5 py-3 text-white font-medium hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/30">
+                  Buscar
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="lg:col-span-5">
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="rounded-lg bg-slate-50 p-4 text-center">
+                  <div class="text-sm text-slate-600">Tickets Abiertos</div>
+                  <div id="metricTicketsAbiertos" data-target="28" class="mt-1 text-3xl font-bold text-slate-900">0</div>
+                </div>
+                <div class="rounded-lg bg-slate-50 p-4 text-center">
+                  <div class="text-sm text-slate-600">Insumos por Agotarse</div>
+                  <div id="metricInsumosAgotarse" data-target="5" class="mt-1 text-3xl font-bold text-slate-900">0</div>
+                </div>
+                <div class="rounded-lg bg-slate-50 p-4 text-center">
+                  <div class="text-sm text-slate-600">Soportes Finalizados Hoy</div>
+                  <div id="metricSoportesHoy" data-target="9" class="mt-1 text-3xl font-bold text-slate-900">0</div>
+                </div>
+              </div>
+              <p class="mt-4 text-xs text-slate-500">Valores demostrativos; se conectarán a métricas reales vía API.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accesos directos -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h2 class="text-xl font-semibold text-slate-900">Acceso rápido a funciones</h2>
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="/usuarios" class="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow transition">
+          <div class="text-sm font-medium text-slate-900">Gestión de Usuarios</div>
+          <p class="mt-2 text-sm text-slate-600">Roles y cuentas del sistema (Admin, Técnico, Usuario).</p>
+          <span class="mt-4 inline-flex text-blue-600 group-hover:underline">Ir a Usuarios</span>
+        </a>
+        <a href="/inventario" class="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow transition">
+          <div class="text-sm font-medium text-slate-900">Control de Insumos</div>
+          <p class="mt-2 text-sm text-slate-600">Stock de hardware y consumibles, movimientos y alertas.</p>
+          <span class="mt-4 inline-flex text-blue-600 group-hover:underline">Ir a Inventario</span>
+        </a>
+        <a href="/reportes" class="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow transition">
+          <div class="text-sm font-medium text-slate-900">Reportes</div>
+          <p class="mt-2 text-sm text-slate-600">Indicadores operativos y auditoría de acciones.</p>
+          <span class="mt-4 inline-flex text-blue-600 group-hover:underline">Ir a Reportes</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mt-8 border-t border-slate-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-slate-600">
+      Subgerencia de Tecnologías de la Información — Municipalidad Distrital de Cocachacra
+    </div>
+  </footer>
+
+  <script>
+    function animateCounter(el) {
+      const target = parseInt(el.getAttribute('data-target'), 10) || 0;
+      const duration = 900;
+      const startTime = performance.now();
+      function update(now) {
+        const p = Math.min((now - startTime) / duration, 1);
+        const value = Math.floor(p * target);
+        el.textContent = value.toString();
+        if (p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      ['metricTicketsAbiertos','metricInsumosAgotarse','metricSoportesHoy']
+        .forEach(id => { const el = document.getElementById(id); if (el) animateCounter(el); });
+      const form = document.getElementById('ticketSearchForm');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          const q = (document.getElementById('q') || {}).value || '';
+          form.action = '/tickets?q=' + encodeURIComponent(q);
+        });
+      }
+    });
+  </script>
+</body>
 </html>

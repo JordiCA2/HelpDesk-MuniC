@@ -1,0 +1,16 @@
+# Archivos de NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# Archivos de Maven (Si usas Maven)
+target/
+
+# Archivos de TRAE / VS Code
+.vscode/
+.gemini/
+.antigravity/
