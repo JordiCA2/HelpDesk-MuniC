@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel — Sistema de Soporte e Inventario</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="color-scheme" content="light">
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="/assets/logo-muni-cocachacra.svg" alt="Municipalidad Distrital de Cocachacra" class="h-8 w-auto">
+        <span class="text-slate-900 font-semibold tracking-tight">Sistema de Soporte e Inventario</span>
+      </div>
+      <nav class="hidden sm:flex items-center gap-2">
+        <a href="registrar_ticket.jsp" class="inline-flex items-center rounded-md border border-slate-300 px-3 py-2 text-slate-700 hover:bg-slate-50">Tickets</a>
+        <a href="inventario.jsp" class="inline-flex items-center rounded-md border border-slate-300 px-3 py-2 text-slate-700 hover:bg-slate-50">Inventario</a>
+        <a href="reportes.jsp" class="inline-flex items-center rounded-md border border-slate-300 px-3 py-2 text-slate-700 hover:bg-slate-50">Reportes</a>
+        <a href="index.html" class="inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-white hover:bg-red-700">Cerrar sesión</a>
+      </nav>
+    </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-semibold text-slate-900">Panel de Control</h1>
+      <p class="text-sm text-slate-500">Sesión iniciada correctamente</p>
+    </div>
+    <section class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="text-sm text-slate-600">Tickets Abiertos</div>
+        <div id="kpiAbiertos" data-target="28" class="mt-1 text-3xl font-bold text-slate-900">0</div>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="text-sm text-slate-600">Pendientes por Asignar</div>
+        <div id="kpiPendientes" data-target="7" class="mt-1 text-3xl font-bold text-slate-900">0</div>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="text-sm text-slate-600">Insumos por Agotarse</div>
+        <div id="kpiInsumos" data-target="5" class="mt-1 text-3xl font-bold text-slate-900">0</div>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="text-sm text-slate-600">Soportes Finalizados Hoy</div>
+        <div id="kpiHoy" data-target="9" class="mt-1 text-3xl font-bold text-slate-900">0</div>
+      </div>
+    </section>
+    <section class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-slate-900">Últimos Tickets</h2>
+          <a href="registrar_ticket.jsp" class="text-sm text-blue-600 hover:underline">Ver todos</a>
+        </div>
+        <div id="lastTicketsList" class="mt-4 divide-y divide-slate-100"></div>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 class="text-lg font-semibold text-slate-900">Acciones rápidas</h2>
+        <div class="mt-4 space-y-3">
+          <a href="registrar_ticket.jsp" class="block rounded-lg border border-slate-200 p-3 hover:bg-slate-50">Crear nuevo ticket</a>
+          <a href="inventario.jsp" class="block rounded-lg border border-slate-200 p-3 hover:bg-slate-50">Revisar inventario</a>
+          <a href="usuarios.jsp" class="block rounded-lg border border-slate-200 p-3 hover:bg-slate-50">Gestión de usuarios</a>
+          <a href="index.html" class="block rounded-lg border border-slate-200 p-3 hover:bg-slate-50 text-red-600">Cerrar sesión</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    function animate(el) {
+      const target = parseInt(el.getAttribute('data-target'), 10) || 0;
+      const duration = 900;
+      const start = performance.now();
+      function step(now) {
+        const p = Math.min((now - start) / duration, 1);
+        el.textContent = Math.floor(p * target);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      ['kpiAbiertos','kpiPendientes','kpiInsumos','kpiHoy'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) animate(el);
+      });
+      function badge(estado) {
+        const e = (estado || '').toLowerCase();
+        if (e.includes('final')) return { cls: 'bg-emerald-100 text-emerald-700', txt: 'Finalizado' };
+        if (e.includes('resuel')) return { cls: 'bg-emerald-100 text-emerald-700', txt: 'Resuelto' };
+        if (e.includes('proce')) return { cls: 'bg-amber-100 text-amber-700', txt: 'En Proceso' };
+        return { cls: 'bg-slate-100 text-slate-700', txt: estado || 'Pendiente' };
+      }
+      fetch('reportes/generar', { headers: { 'Accept': 'application/json' } })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          const cont = document.getElementById('lastTicketsList');
+          if (!cont) return;
+          const items = (data && data.ultimos_tickets) ? data.ultimos_tickets : [];
+          cont.innerHTML = items.map(t => {
+            const b = badge(t.estado);
+            const who = t.solicitante ? t.solicitante : '—';
+            return `
+            <div class="flex items-center justify-between py-3">
+              <div>
+                <div class="text-sm font-medium text-slate-900">TK-${String(t.id_ticket).padStart(6,'0')} • ${t.asunto}</div>
+                <div class="text-xs text-slate-500">${who}</div>
+              </div>
+              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${b.cls}">${b.txt}</span>
+            </div>`;
+          }).join('');
+        })
+        .catch(() => {});
+    });
+  </script>
+</body>
+</html>

@@ -3,11 +3,11 @@
   <persistence-unit name="helpdeskPU">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <properties>
-      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/helpdesk_cocachacra"/>
-      <property name="javax.persistence.jdbc.user" value="helpdesk_user"/>
-      <property name="javax.persistence.jdbc.password" value="cambiar_esta_contraseña"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/helpdesk_cocachacra?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.password" value=""/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
       <property name="hibernate.hbm2ddl.auto" value="validate"/>
       <property name="hibernate.show_sql" value="false"/>
       <property name="hibernate.format_sql" value="true"/>
